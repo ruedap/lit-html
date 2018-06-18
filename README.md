@@ -1,4 +1,5 @@
 # lit-html
+
 HTML templates, via JavaScript template literals
 
 [![Build Status](https://travis-ci.org/Polymer/lit-html.svg?branch=master)](https://travis-ci.org/Polymer/lit-html)
@@ -7,25 +8,38 @@ HTML templates, via JavaScript template literals
 
 `lit-html` lets you write [HTML templates](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template) with JavaScript [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals), and efficiently render and _re-render_ those templates to DOM.
 
+`lit-html`を使用すると、JavaScript テンプレートリテラルで HTML テンプレートを作成し、それらのテンプレートを効率的に DOM にレンダリングおよび再レンダリングすることができます。
+
+Visit the [lit-html documentation](https://polymer.github.io/lit-html).
+
 ```javascript
-import {html, render} from 'lit-html';
+import { html, render } from "lit-html";
 
 // This is a lit-html template function. It returns a lit-html template.
-const helloTemplate = (name) => html`<div>Hello ${name}!</div>`;
+// これはlit-htmlテンプレート関数です。 lit-htmlテンプレートを返します。
+const helloTemplate = name => html`<div>Hello ${name}!</div>`;
 
 // Call the function with some data, and pass the result to render()
+// 何らかのデータで関数を呼び出し、その結果を render() に渡します。
 
 // This renders <div>Hello Steve!</div> to the document body
-render(helloTemplate('Steve'), document.body);
+// これにより <div>Hello Steve!</div> がdocument bodyにレンダリングされます。
+render(helloTemplate("Steve"), document.body);
 
 // This updates to <div>Hello Kevin!</div>, but only updates the ${name} part
-render(helloTemplate('Kevin'), document.body);
+// これにより <div>Hello Kevin!</div> に更新されますが、${name}部分のみが更新されます。
+render(helloTemplate("Kevin"), document.body);
 ```
 
 `lit-html` provides two main exports:
 
- * `html`: A JavaScript [template tag](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals) used to produce a `TemplateResult`, which is a container for a template, and the values that should populate the template.
- * `render()`: A function that renders a `TemplateResult` to a DOM container, such as an element or shadow root.
+* `html`: A JavaScript [template tag](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_template_literals) used to produce a `TemplateResult`, which is a container for a template, and the values that should populate the template.
+* `render()`: A function that renders a `TemplateResult` to a DOM container, such as an element or shadow root.
+
+`lit-html`は、2 つの主要な export を提供します:
+
+* `html`: テンプレートのコンテナである `TemplateResult` を生成するために使用される JavaScript テンプレートタグ、およびそのテンプレートに投入する値
+* `render()`: `TemplateResult` を要素または Shadow Root のような DOM コンテナにレンダリングする関数
 
 ### Announcement at Polymer Summit 2017
 
@@ -41,10 +55,17 @@ render(helloTemplate('Kevin'), document.body);
 
 `lit-html` has four main goals:
 
-1. Efficient updates of previously rendered DOM.
-2. Expressiveness and easy access to the JavaScript state that needs to be injected into DOM.
-3. Standard JavaScript without required build steps, understandable by standards-compliant tools.
-4. Very small size.
+1.  Efficient updates of previously rendered DOM.
+2.  Expressiveness and easy access to the JavaScript state that needs to be injected into DOM.
+3.  Standard JavaScript without required build steps, understandable by standards-compliant tools.
+4.  Very small size.
+
+`lit-html` は 4 つの主要な目標があります:
+
+1.  以前にレンダリングされた DOM の効率的な更新
+2.  DOM に注入する必要がある JavaScript ステートへの容易なアクセスと表現力
+3.  ビルド工程を必要とせず、標準準拠のツールで理解できる標準の JavaScript
+4.  非常に小さいサイズ
 
 ## Installation
 
@@ -56,34 +77,52 @@ $ npm install lit-html
 
 `lit-html` utilizes some unique properties of HTML `<template>` elements and JavaScript template literals. So it's helpful to understand them first.
 
+<!-- TODO: ユニークなプロパティ -->
+
+`lit-html` は、HTML の`<template>`要素と JavaScript テンプレートリテラルのいくつかのユニークなプロパティを利用しています。よって、それらを最初に理解することは有益です。
+
 ### Tagged Template Literals
 
 A JavaScript template literal is a string literal that can have other JavaScript expressions embedded in it:
 
+JavaScript テンプレートリテラルは、その中に他の JavaScript の式を埋め込むことができる文字列リテラルです:
+
 ```javascript
-`My name is ${name}.`
+`My name is ${name}.`;
 ```
 
 A _tagged_ template literal is prefixed with a special template tag function:
 
+_タグ付き_ テンプレートリテラルには、特別なテンプレートタグ関数のプレフィックスが付与されます:
+
 ```javascript
-let name = 'Monica';
-tag`My name is ${name}.`
+let name = "Monica";
+tag`My name is ${name}.`;
 ```
 
 Tags are functions of the form: `tag(strings, ...values)`, where `strings` is an immutable array of the literal parts, and values are the results of the embedded expressions.
 
+タグは、`tag(strings, ...values)` の形式の関数です。引数の `strings` はリテラル部分のイミュータブルな配列で、`values` は埋め込まれた式の結果です。
+
 In the preceding example, `strings` would be `['My name is ', '.']`, and `values` would be `['Monica']`.
+
+前述の例では、`strings` は `['My name is ', '.']` になり、`values` は `['Monica']` になります。
 
 ### HTML `<template>` Elements
 
 A `<template>` element is an inert tree of DOM (script don't run, images don't load, custom elements aren't upgraded, etc) that can be efficiently cloned. It's usually used to tell the HTML parser that a section of the document must not be instantiated when parsed, but by code at a later time, but it can also be created imperatively with `createElement` and `innerHTML`.
 
+`<template>` 要素は、効率的に複製できる不活性な DOM ツリーです（スクリプトは実行されず、画像は読み込まれず、カスタムエレメントは更新されません）。それは通常、パース時にインスタンス化されるべきではないドキュメントのセクションを HTML パーサーに伝えるために使用されますが、後でコードによって、`createElement` や `innerHTML` を使って命令的に生成されます。
+
 ### Template Creation
 
 The first time `html` is called on a particular template literal it does one-time setup work to create the template. It joins all the string parts with a special placeholder, `"{{}}"`, then creates a `<template>` and sets its `innerHTML` to the result. Then it walks the template's DOM and extracts the placeholder and remembers their location.
 
+最初の`html`は、特定のテンプレートリレラルによって呼ばれ、テンプレートを生成するためセットアップ作業が 1 回行われます。特別なプレースホルダー `"{{}}"` ですべての文字列部分を結合し、それから `<template>` を生成し、その結果に `innerHTML` を設定します。それからテンプレートの DOM を巡回し、プレースホルダーを抽出し、それらの場所を記憶します。
+
 Every call to `html` returns a `TemplateResult` which contains the template created on the first call, and the expression values for the current call.
+
+`html` の呼び出しごとに、最初の呼び出しで生成されたテンプレートと、現在の呼び出しの式の値を含む `TemplateResult` を返します。
 
 ### Template Rendering
 
@@ -97,9 +136,9 @@ Rendering can be customized by providing alternate `render()` implementations wh
 
 `lit-html` is designed to be lightweight and fast (though performance benchmarking is just starting).
 
- * It utilizes the built-in JS and HTML parsers - it doesn't include any expression or markup parser of its own.
- * It only updates the dynamic parts of templates - static parts are untouched, not even walked for diffing, after the initial render.
- * It uses cloning for initial render.
+* It utilizes the built-in JS and HTML parsers - it doesn't include any expression or markup parser of its own.
+* It only updates the dynamic parts of templates - static parts are untouched, not even walked for diffing, after the initial render.
+* It uses cloning for initial render.
 
 This should make the approach generally fast and small. Actual science and optimization and still TODOs at this time.
 
@@ -126,8 +165,8 @@ To create partial SVG templates - template that will rendering inside and `<svg>
 ```javascript
 const grid = svg`
   <g>
-    ${[0, 10, 20].map((x) => svg`<line x1=${x} y1="0" x2=${x} y2="20"/>`)}
-    ${[0, 10, 20].map((y) => svg`<line x1="0" y1=${y} x2="0" y2=${y}/>`)}
+    ${[0, 10, 20].map(x => svg`<line x1=${x} y1="0" x2=${x} y2="20"/>`)}
+    ${[0, 10, 20].map(y => svg`<line x1="0" y1=${y} x2="0" y2=${y}/>`)}
   </g>
 `;
 ```
@@ -144,21 +183,21 @@ Attribute parts store both the HTML-parsed name and the raw name pulled from the
 
 ```javascript
 const render = () => html`<div someProp="${blue}"></div>`;
-render().template.parts[0].rawName === 'someProp';
+render().template.parts[0].rawName === "someProp";
 ```
 
 ### Arrays/Iterables
 
 ```javascript
 const items = [1, 2, 3];
-const render = () => html`items = ${items.map((i) => `item: ${i}`)}`;
+const render = () => html`items = ${items.map(i => `item: ${i}`)}`;
 ```
 
 ```javascript
 const items = {
   a: 1,
   b: 23,
-  c: 456,
+  c: 456
 };
 const render = () => html`items = ${Object.entries(items)}`;
 ```
@@ -179,7 +218,7 @@ Promises are rendered when they resolve, leaving the previous value in place unt
 
 ```javascript
 const render = () => html`
-  The response is ${fetch('sample.txt').then((r) => r.text())}.
+  The response is ${fetch("sample.txt").then(r => r.text())}.
 `;
 ```
 
@@ -190,7 +229,9 @@ Directives are functions that can extend lit-html by directly interacting with t
 Directives will usually be created from factory functions that accept some arguments for values and configuration. Directives are created by passing a function to lit-html's `directive()` function:
 
 ```javascript
-html`<div>${directive((part) => { part.setValue('Hello')})}</div>`
+html`<div>${directive(part => {
+  part.setValue("Hello");
+})}</div>`;
 ```
 
 The `part` argument is a `Part` object with an API for directly managing the dynamic DOM associated with expressions. See the `Part` API in api.md.
@@ -198,20 +239,21 @@ The `part` argument is a `Part` object with an API for directly managing the dyn
 Here's an example of a directive that takes a function, and evaluates it in a try/catch to implement exception safe expressions:
 
 ```javascript
-const safe = (f) => directive((part) => {
-  try {
-    return f();
-  } catch (e) {
-    console.error(e);
-  }
-});
+const safe = f =>
+  directive(part => {
+    try {
+      return f();
+    } catch (e) {
+      console.error(e);
+    }
+  });
 ```
 
 Now `safe()` can be used to wrap a function:
 
 ```javascript
 let data;
-const render = () => html`foo = ${safe(_=>data.foo)}`;
+const render = () => html`foo = ${safe(_ => data.foo)}`;
 ```
 
 This example increments a counter on every render:
@@ -219,7 +261,7 @@ This example increments a counter on every render:
 ```javascript
 const render = () => html`
   <div>
-    ${directive((part) => part.setValue((part.previousValue + 1) || 0))}
+    ${directive(part => part.setValue(part.previousValue + 1 || 0))}
   </div>`;
 ```
 
@@ -234,8 +276,12 @@ Example:
 ```javascript
 const render = () => html`
   <ul>
-    ${repeat(items, (i) => i.id, (i, index) => html`
-      <li>${index}: ${i.name}</li>`)}
+    ${repeat(
+      items,
+      i => i.id,
+      (i, index) => html`
+      <li>${index}: ${i.name}</li>`
+    )}
   </ul>
 `;
 ```
@@ -250,8 +296,9 @@ Example:
 const render = () => html`
   <p>
     ${until(
-        fetch('content.txt').then((r) => r.text()),
-        html`<span>Loading...</span>`)}
+      fetch("content.txt").then(r => r.text()),
+      html`<span>Loading...</span>`
+    )}
   </p>
 `;
 ```
@@ -262,16 +309,15 @@ JavaScript asynchronous iterators provide a generic interface for asynchronous s
 
 lit-html offers two directives to consume asynchronous iterators:
 
- * `asyncAppend` renders the values of an [async iterable](https://github.com/tc39/proposal-async-iteration),
-appending each new value after the previous.
- * `asyncReplace` renders the values of an [async iterable](https://github.com/tc39/proposal-async-iteration),
-replacing the previous value with the new value.
+* `asyncAppend` renders the values of an [async iterable](https://github.com/tc39/proposal-async-iteration),
+  appending each new value after the previous.
+* `asyncReplace` renders the values of an [async iterable](https://github.com/tc39/proposal-async-iteration),
+  replacing the previous value with the new value.
 
 Example:
 
 ```javascript
-
-const wait = (t) => new Promise((resolve) => setTimeout(resolve, t));
+const wait = t => new Promise(resolve => setTimeout(resolve, t));
 
 /**
  * Returns an async iterable that yields increasing integers.
@@ -284,9 +330,12 @@ async function* countUp() {
   }
 }
 
-render(html`
+render(
+  html`
   Count: <span>${asyncReplace(countUp())}</span>.
-`, document.body);
+`,
+  document.body
+);
 ```
 
 In the near future, `ReadableStream`s will be async iterables, enabling streaming `fetch()` directly into a template:
@@ -294,7 +343,7 @@ In the near future, `ReadableStream`s will be async iterables, enabling streamin
 ```javascript
 // Endpoint that returns a billion digits of PI, streamed.
 const url =
-    'https://cors-anywhere.herokuapp.com/http://stuff.mit.edu/afs/sipb/contrib/pi/pi-billion.txt';
+  "https://cors-anywhere.herokuapp.com/http://stuff.mit.edu/afs/sipb/contrib/pi/pi-billion.txt";
 
 const streamingResponse = (async () => {
   const response = await fetch(url);
@@ -313,19 +362,19 @@ These features compose so you can render iterables of functions that return arra
 
 Some examples of possible extensions:
 
- * Property setting: Attribute expressions in templates could set properties on node.
- * Event handlers: Specially named attributes can install event handlers.
- * HTML values: `lit-html` creates `Text` nodes by default. Extensions could allow setting `innerHTML`.
+* Property setting: Attribute expressions in templates could set properties on node.
+* Event handlers: Specially named attributes can install event handlers.
+* HTML values: `lit-html` creates `Text` nodes by default. Extensions could allow setting `innerHTML`.
 
 ## Status
 
 `lit-html` is very new, under initial development, and not production-ready.
 
- * It uses JavaScript modules, and there's no build set up yet, so out-of-the-box it only runs in Safari 10.1, Chrome 61, and Firefox 54 (behind a flag).
- * It has a growing test suite, but it has only been run manually on Chrome Canary, Safari 10.1 and Firefox 54.
- * Much more test coverage is needed for complex templates, especially template composition and Function and Iterable values.
- * It has not been benchmarked thoroughly yet.
- * The API may change.
+* It uses JavaScript modules, and there's no build set up yet, so out-of-the-box it only runs in Safari 10.1, Chrome 61, and Firefox 54 (behind a flag).
+* It has a growing test suite, but it has only been run manually on Chrome Canary, Safari 10.1 and Firefox 54.
+* Much more test coverage is needed for complex templates, especially template composition and Function and Iterable values.
+* It has not been benchmarked thoroughly yet.
+* The API may change.
 
 Even without a build configuration, `lit-html` minified with `babili` and gzipped measures in at less than 1.7k. We will strive to keep the size extremely small.
 
@@ -386,7 +435,7 @@ html`
       background: burlywood;
     }
   </style>
-`
+`;
 ```
 
 ## Future Work
@@ -401,9 +450,11 @@ Example:
 
 ```javascript
 const render = () => html`
-  ${when(state === 'loading',
+  ${when(
+    state === "loading",
     html`<div>Loading...</div>`,
-    html`<p>${message}</p>`)}
+    html`<p>${message}</p>`
+  )}
 `;
 ```
 
